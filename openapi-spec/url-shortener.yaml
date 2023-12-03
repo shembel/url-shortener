@@ -1,0 +1,239 @@
+openapi: 3.0.0
+x-stoplight:
+    id: e60tbntf9lw01
+info:
+    title: url-shortener
+    version: '1.0'
+    description: This is a URL shortener API.
+    contact:
+        name: Vadim Uvin
+        email: vadim.uvin2@swisscom.com
+servers:
+    - url: 'http://localhost:3000'
+paths:
+    /urls:
+        post:
+            summary: Create short URL
+            operationId: post-urls
+            responses:
+                '201':
+                    description: Created
+                '401':
+                    description: Unauthorized
+            description: Create a new short url
+            security:
+                - JWT: []
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UrlItem'
+        get:
+            summary: Get URLs
+            operationId: get-urls
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/UrlItem'
+                '401':
+                    description: Unauthorized
+            description: 'Get URLs. For a user, it shows only user URLs. In case admin is logged in, it shows all URLs accross all users.'
+            parameters: []
+            security:
+                - JWT: []
+        delete:
+            summary: Delete short URL
+            operationId: delete-urls
+            responses:
+                '200':
+                    description: OK
+                '401':
+                    description: Unauthorized
+            description: Disable a short URL.
+            security:
+                - JWT: []
+    /login:
+        post:
+            summary: Login
+            operationId: post-login
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginInfo'
+                '401':
+                    description: Unauthorized
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserLoginRequest'
+        delete:
+            summary: Logout
+            operationId: delete-login
+            responses:
+                '200':
+                    description: OK
+                '401':
+                    description: Unauthorized
+            description: Logs the logged in user out
+            security:
+                - JWT: []
+            parameters: []
+    '/urls/{urlUuid}':
+        parameters:
+            - schema:
+                  type: string
+                  format: uuid
+              name: urlUuid
+              in: path
+              required: true
+              description: UUID of the URL to show
+        get:
+            summary: Get single URL
+            tags: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Url'
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+            operationId: get-urls-by-uuid
+            description: Returns concrete URL
+            security:
+                - JWT: []
+    '/to/{shortUrl}':
+        get:
+            summary: Resolve short URL
+            tags: []
+            responses:
+                '301':
+                    description: Moved Permanently
+                    headers: {}
+                '404':
+                    description: Not Found
+            operationId: resolve-short-url
+            description: Resolves short URL into long URL. Not for frontend.
+        parameters:
+            - schema:
+                  type: string
+              name: shortUrl
+              in: path
+              required: true
+components:
+    schemas:
+        UserLoginRequest:
+            title: UserLoginRequest
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+            x-stoplight:
+                id: 5ff973fde8e2a
+        LoginInfo:
+            title: LoginInfo
+            x-stoplight:
+                id: guoai4xatxa0p
+            type: object
+            properties:
+                username:
+                    type: string
+                token:
+                    type: string
+            required:
+                - username
+                - token
+            description: Contains JWT token after successful user login.
+        UrlItem:
+            title: UrlItem
+            x-stoplight:
+                id: fd13a0575456b
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                shortUrl:
+                    type: string
+                fullUrl:
+                    type: string
+            description: URL data without analytics to show in a list
+            x-examples:
+                Example 1:
+                    id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    shortUrl: /ff12ed
+                    fullUrl: 'https://google.com'
+        UrlAnalyticsItem:
+            title: UrlAnalyticsItem
+            x-stoplight:
+                id: xqjy6prqlm00f
+            type: object
+            description: Contains how many clicks some URL had at a given date and time
+            properties:
+                datetime:
+                    type: string
+                    format: date-time
+                clicked:
+                    type: integer
+                    description: how many times a URL was clicked
+            required:
+                - datetime
+                - clicked
+        Url:
+            title: Url
+            x-stoplight:
+                id: zuu9jvr5hbl1i
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                shortUrl:
+                    type: string
+                fullUrl:
+                    type: string
+                analytics:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UrlAnalyticsItem'
+            required:
+                - id
+                - shortUrl
+                - fullUrl
+                - analytics
+            description: Full URL to be displayed in URL details
+            x-examples:
+                Example 1:
+                    id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    shortUrl: /ff23ed
+                    fullUrl: 'https://google.com'
+                    analytics:
+                        - datetime: '2019-08-24T14:15:22Z'
+                          clicked: 0
+                        - datetime: '2019-08-25T14:15:22Z'
+                          clicked: 5
+                        - datetime: '2019-08-26T14:15:22Z'
+                          clicked: 50
+                        - datetime: '2019-08-27T14:15:22Z'
+                          clicked: 75
+                        - datetime: '2019-08-28T14:15:22Z'
+                          clicked: 100
+    securitySchemes:
+        JWT:
+            type: http
+            scheme: bearer
+
