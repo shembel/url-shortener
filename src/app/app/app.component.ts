@@ -1,15 +1,11 @@
-// import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
-import {
-    TuiRootModule,
-    TuiDialogModule,
-    TuiAlertModule,
-    // TUI_SANITIZER,
-} from '@taiga-ui/core';
+import { TuiRootModule, TuiDialogModule, TuiAlertModule } from '@taiga-ui/core';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { TUI_PARENT_ANIMATION } from '@taiga-ui/cdk';
+
+import { HeaderComponent } from '../shared/ui/header/header.component';
 
 @Component({
     selector: 'app-root',
@@ -20,11 +16,12 @@ import { TUI_PARENT_ANIMATION } from '@taiga-ui/cdk';
         TuiRootModule,
         TuiDialogModule,
         TuiAlertModule,
+        RouterModule,
+        HeaderComponent,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     animations: [TUI_PARENT_ANIMATION],
-    // providers: [{ provide: TUI_SANITIZER, useClass: NgDompurifySanitizer }],
 })
 export class AppComponent {
     title = 'url-shortener';

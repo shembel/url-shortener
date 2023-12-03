@@ -7,13 +7,11 @@ import {
     TuiRootModule,
 } from '@taiga-ui/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app/app.component';
-
 import { ApiModule } from './core/modules/openapi';
 
+import { AppComponent } from './app/app.component';
+
 @NgModule({
-    // declarations: [AppComponent],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
@@ -21,8 +19,6 @@ import { ApiModule } from './core/modules/openapi';
         TuiRootModule,
         TuiDialogModule,
         TuiNotificationModule,
-
-        AppRoutingModule,
 
         ApiModule,
     ],

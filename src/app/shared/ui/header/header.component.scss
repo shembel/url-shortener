@@ -1,0 +1,19 @@
+.topbar {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    z-index: 1;
+    padding: 1rem;
+    width: 100%;
+
+    & a {
+        margin-right: 3rem;
+        margin-left: auto;
+
+        & img {
+            object-fit: contain;
+            height: 2rem;
+            width: 2rem;
+        }
+    }
+}

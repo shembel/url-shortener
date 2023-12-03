@@ -1,0 +1,23 @@
+<div id="spinner" class="img"></div>
+<style>
+    .img {
+        background-image: url("https://sdx.scsstatic.ch/v2.108.1/js/webcomponents/webcomponents/assets/lifeform-spritesheet@2x.png");
+        background-size: 3600px 40px;
+        background-position: 0px 0px;
+        background-repeat: no-repeat;
+        width: 40px;
+        height: 40px;
+        backface-visibility: hidden;
+        min-width: 40px;
+        display: inline-block;
+        animation: 4s steps(90) 0s infinite normal none running repeatingAnimation;
+    }
+    @keyframes repeatingAnimation {
+        0% {
+            background-position: 0;
+        }
+        100% {
+            background-position: -3600px center;
+        }
+    }
+</style>
