@@ -5,11 +5,14 @@ import {
     TuiDialogModule,
     TuiNotificationModule,
     TuiRootModule,
+    TuiSvgModule,
+    TuiThemeNightModule,
+    TuiModeModule,
 } from '@taiga-ui/core';
-
 import { ApiModule } from './core/modules/openapi';
 
 import { AppComponent } from './app/app.component';
+import { ShortenerComponent } from './shared/ui/shortener/shortener.component';
 
 @NgModule({
     imports: [
@@ -19,8 +22,13 @@ import { AppComponent } from './app/app.component';
         TuiRootModule,
         TuiDialogModule,
         TuiNotificationModule,
+        TuiSvgModule,
+        TuiThemeNightModule,
+        TuiModeModule,
 
         ApiModule,
+
+        ShortenerComponent,
     ],
     providers: [],
     bootstrap: [AppComponent],

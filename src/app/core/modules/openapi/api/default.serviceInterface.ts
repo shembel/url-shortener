@@ -9,69 +9,73 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { HttpHeaders }                                       from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
-import { Observable }                                        from 'rxjs/Observable';
-
+import { Observable } from 'rxjs';
 
 import { LoginInfo } from '../model/loginInfo';
 import { Url } from '../model/url';
 import { UrlItem } from '../model/urlItem';
 import { UserLoginRequest } from '../model/userLoginRequest';
 
-
-import { Configuration }                                     from '../configuration';
-
+import { Configuration } from '../configuration';
 
 export interface DefaultServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
-    
 
     /**
-    * Logout
-    * Logs the logged in user out
-    */
+     * Logout
+     * Logs the logged in user out
+     */
     deleteLogin(extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-    * Delete short URL
-    * Disable a short URL.
-    */
+     * Delete short URL
+     * Disable a short URL.
+     */
     deleteUrls(extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-    * Get URLs
-    * Get URLs. For a user, it shows only user URLs. In case admin is logged in, it shows all URLs accross all users.
-    */
+     * Get URLs
+     * Get URLs. For a user, it shows only user URLs. In case admin is logged in, it shows all URLs accross all users.
+     */
     getUrls(extraHttpRequestParams?: any): Observable<Array<UrlItem>>;
 
     /**
-    * Get single URL
-    * Returns concrete URL
-    * @param urlUuid UUID of the URL to show
-    */
-    getUrlsByUuid(urlUuid: string, extraHttpRequestParams?: any): Observable<Url>;
+     * Get single URL
+     * Returns concrete URL
+     * @param urlUuid UUID of the URL to show
+     */
+    getUrlsByUuid(
+        urlUuid: string,
+        extraHttpRequestParams?: any
+    ): Observable<Url>;
 
     /**
-    * Login
-    * 
-    * @param body 
-    */
-    postLogin(body?: UserLoginRequest, extraHttpRequestParams?: any): Observable<LoginInfo>;
+     * Login
+     *
+     * @param body
+     */
+    postLogin(
+        body?: UserLoginRequest,
+        extraHttpRequestParams?: any
+    ): Observable<LoginInfo>;
 
     /**
-    * Create short URL
-    * Create a new short url
-    * @param body 
-    */
+     * Create short URL
+     * Create a new short url
+     * @param body
+     */
     postUrls(body?: UrlItem, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-    * Resolve short URL
-    * Resolves short URL into long URL. Not for frontend.
-    * @param shortUrl 
-    */
-    resolveShortUrl(shortUrl: string, extraHttpRequestParams?: any): Observable<{}>;
-
+     * Resolve short URL
+     * Resolves short URL into long URL. Not for frontend.
+     * @param shortUrl
+     */
+    resolveShortUrl(
+        shortUrl: string,
+        extraHttpRequestParams?: any
+    ): Observable<{}>;
 }

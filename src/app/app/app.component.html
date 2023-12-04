@@ -1,8 +1,18 @@
-<tui-root class="content">
-<!--        ToDo: add header -->
-    <app-header class="header-container"></app-header>
-    <div class="main-content">
-        <main>
+<tui-theme-night></tui-theme-night>
+
+<tui-root [tuiMode]="mode" class="wrapper">
+    <app-header></app-header>
+
+    <div class="bg-animation flex justify-center items-center">
+        <div class="blob-container">
+            <div class="blob blob-purple"></div>
+            <div class="blob blob-blue"></div>
+            <div class="blob blob-pink"></div>
+        </div>
+    </div>
+
+    <div class="main-content h-screen">
+        <main class="h-full w-full">
             <router-outlet></router-outlet>
         </main>
     </div>

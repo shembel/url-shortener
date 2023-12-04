@@ -1,1 +1,45 @@
-<p>shortener works!</p>
+<form class="flex items-center gap-2 w-full fot-content max-w-[50rem] kekek" [formGroup]="urlShortenerForm" (ngSubmit)="urlShortenerForm.valid && submit()">
+        <div class="min-w-[20rem] w-full shortener-input tui-form__row">
+            <tui-input
+                formControlName="url"
+                [appInvalidUrlValidator]="url"
+            >
+                Enter a long URL: <span class="tui-required"></span>
+            </tui-input>
+        </div>
+
+<!--    <tui-notification *ngIf="showLoginError$ | async" status="error" class="aa&#45;&#45;mt-4">-->
+<!--        Ooops! The login details are incorrect.-->
+<!--    </tui-notification>-->
+
+<!--    <tui-notification *ngIf="isInvalidUrl$ | async" status="error">-->
+<!--    <tui-notification *ngIf="isInvalidUrl$" status="error">-->
+<!--        The provided URL is malformed. Please enter correct URL (e.g. https://example.com).-->
+<!--    </tui-notification>-->
+
+
+    <div class="h-full tui-form__buttons">
+        <!--            [showLoader]="(isLoading$ | async)!"-->
+        <button
+            tuiButton
+            icon="tuiIconWindLarge"
+            class="tui-form__button"
+            size="m"
+            type="submit"
+        >Generate</button>
+    </div>
+</form>
+
+<button
+        (click)="getAllUrls()"
+>
+    Get All urls
+</button>
+
+<button
+        (click)="getUrlById('bbea622a-5e83-4f85-8982-d27cf437fb1c')"
+>
+    Get UrlById
+</button>
+
+

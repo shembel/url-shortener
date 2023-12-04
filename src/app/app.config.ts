@@ -8,12 +8,28 @@ import { TUI_IS_CYPRESS } from '@taiga-ui/cdk';
 
 import { routes } from './app.routes';
 
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService } from './core/services/in-memory-data.service';
+
+const HttpClientInMemoryWebApiModuleStub =
+    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
+        dataEncapsulation: false,
+        delay: 500,
+    });
+
 export const appConfig: ApplicationConfig = {
     providers: [
         provideAnimations(),
         provideRouter(routes),
         provideClientHydration(),
-        importProvidersFrom(TuiRootModule),
+        // ToDo: withFetch() is recommended for SSR but configuring SSL for CORS is time consuming
+        // provideHttpClient(withFetch()),
+        importProvidersFrom(
+            TuiRootModule,
+            HttpClientModule,
+            HttpClientInMemoryWebApiModuleStub
+        ),
         {
             provide: TUI_ANIMATIONS_DURATION,
             useFactory: () => (inject(TUI_IS_CYPRESS) ? 0 : 300),

@@ -14,9 +14,9 @@ import { UrlAnalyticsItem } from './urlAnalyticsItem';
 /**
  * Full URL to be displayed in URL details
  */
-export interface Url { 
+export interface Url {
     id: string;
     shortUrl: string;
     fullUrl: string;
-    analytics: Array<UrlAnalyticsItem>;
+    analytics?: Array<UrlAnalyticsItem>;
 }
