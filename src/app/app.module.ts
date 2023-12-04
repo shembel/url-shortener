@@ -8,11 +8,14 @@ import {
     TuiSvgModule,
     TuiThemeNightModule,
     TuiModeModule,
+    TuiButtonModule,
 } from '@taiga-ui/core';
 import { ApiModule } from './core/modules/openapi';
 
 import { AppComponent } from './app/app.component';
 import { ShortenerComponent } from './shared/ui/shortener/shortener.component';
+import { TuiFieldErrorPipeModule, TuiInputPasswordModule } from '@taiga-ui/kit';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
     imports: [
@@ -25,12 +28,18 @@ import { ShortenerComponent } from './shared/ui/shortener/shortener.component';
         TuiSvgModule,
         TuiThemeNightModule,
         TuiModeModule,
+        TuiFieldErrorPipeModule,
+        TuiButtonModule,
+        TuiNotificationModule,
+        TuiInputPasswordModule,
 
         ApiModule,
 
+        CoreModule,
+
         ShortenerComponent,
     ],
-    providers: [],
+    providers: [CoreModule],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -10,6 +10,7 @@ function isUrlValid(maybeUrl: string) {
     // This feature was added to the spec just recently, limited browser support
     const check = 'canParse' in URL;
     if (check) {
+        // eslint-disable-next-line
         // @ts-ignore - canParse is not yet in the spec
         return URL.canParse(maybeUrl);
     }
@@ -37,8 +38,6 @@ export class InvalidUrlValidatorDirective implements Validator {
 
     validate(control: AbstractControl): ValidationErrors | null {
         const value = control.value;
-        console.log(value);
-        console.log(isUrlValid(value));
 
         if (value && !isUrlValid(value)) {
             return { invalidUrl: true };

@@ -13,6 +13,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 import { TUI_PARENT_ANIMATION } from '@taiga-ui/cdk';
 
 import { HeaderComponent } from '../shared/ui/header/header.component';
+import { MessagesComponent } from '../features/messages/messages.component';
 import { Url } from '../core/modules/openapi';
 
 @Component({
@@ -28,6 +29,7 @@ import { Url } from '../core/modules/openapi';
         HeaderComponent,
         TuiThemeNightModule,
         TuiModeModule,
+        MessagesComponent,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',

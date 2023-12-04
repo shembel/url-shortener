@@ -48,8 +48,8 @@ export class DefaultService implements DefaultServiceInterface {
 
     constructor(
         protected httpClient: HttpClient,
-        @Optional() @Inject(BASE_PATH) basePath: string,
-        @Optional() configuration: Configuration
+        @Optional() @Inject(BASE_PATH) basePath?: string,
+        @Optional() configuration?: Configuration
     ) {
         // debugger;
         if (basePath) {

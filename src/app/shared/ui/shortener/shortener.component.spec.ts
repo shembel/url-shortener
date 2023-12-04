@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ShortenerComponent } from './shortener.component';
+import { UrlService } from '../../../core/services/url.service';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('ShortenerComponent', () => {
     let component: ShortenerComponent;
@@ -8,7 +10,8 @@ describe('ShortenerComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ShortenerComponent],
+            imports: [ShortenerComponent, HttpClientModule],
+            providers: [UrlService, HttpClientModule],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ShortenerComponent);

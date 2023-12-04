@@ -5,6 +5,8 @@ import { DefaultService, Url, UrlItem } from '../modules/openapi';
 import { UrlHashB62 } from '../../shared/util/url-hash-b62';
 import { v4 as uuidv4 } from 'uuid';
 
+import { MessageService } from './message.service';
+
 // ToDo: fix and use configuration parameter and not fix the base path in the default servics
 // import { CustomDefaultService } from '../providers/api.service.provider';
 
@@ -14,7 +16,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 // ToDo: derive subclass and inject properly
 export class UrlService {
-    constructor(private api: DefaultService) {}
+    constructor(
+        public api: DefaultService,
+        private messageService: MessageService
+    ) {}
 
     shortenUrl(url: string): Observable<UrlItem> {
         const urlHash = UrlHashB62.shortenUrl(url);
@@ -27,9 +32,9 @@ export class UrlService {
         return this.api.postUrls(urlObject).pipe(
             tap((url: UrlItem) => {
                 return this.log(
-                    `Created new short url:
-                         # id=${url.id}
-                         # shortUrl=${url.shortUrl}
+                    `Created new short url: \n
+                         # id=${url.id} \n
+                         # shortUrl=${url.shortUrl} \n
                          # fullUrl=${url.fullUrl}`
                 );
             }),
@@ -52,7 +57,8 @@ export class UrlService {
         console.log('Fetching urls...');
 
         return this.api.getUrls().pipe(
-            tap((_) => this.log('fetched urls')),
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            tap((urls) => this.log(`fetched urls: ${JSON.stringify(urls)}`)),
             catchError(this.handleError<UrlItem[]>('getAllUrls', []))
         );
     }
@@ -93,6 +99,6 @@ export class UrlService {
 
     private log(message: string) {
         console.log(`Url service: ${message}`);
-        // this.messageService.add(`Url service: ${message}`);
+        this.messageService.add(`>_ ${message}`);
     }
 }

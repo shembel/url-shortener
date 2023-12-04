@@ -11,6 +11,7 @@ import { routes } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './core/services/in-memory-data.service';
+import { CoreModule } from './core/core.module';
 
 const HttpClientInMemoryWebApiModuleStub =
     HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
@@ -28,7 +29,8 @@ export const appConfig: ApplicationConfig = {
         importProvidersFrom(
             TuiRootModule,
             HttpClientModule,
-            HttpClientInMemoryWebApiModuleStub
+            HttpClientInMemoryWebApiModuleStub,
+            CoreModule
         ),
         {
             provide: TUI_ANIMATIONS_DURATION,

@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 
 import { InvalidUrlValidatorDirective } from '../../util/invalid-url-validator.directive';
 import { UrlService } from '../../../core/services/url.service';
+import { MessageService } from '../../../core/services/message.service';
 
 function urlIsString(url: string | null | undefined): url is string {
     return typeof url === 'string';
@@ -47,7 +48,10 @@ function urlIsString(url: string | null | undefined): url is string {
 export class ShortenerComponent {
     @Input() url: string = '';
 
-    constructor(private urlService: UrlService) {}
+    constructor(
+        private urlService: UrlService,
+        private messageService: MessageService
+    ) {}
 
     // isLoading$ =
     // isInvalidUrl$ =
@@ -63,6 +67,11 @@ export class ShortenerComponent {
     }
 
     getUrlById(id: string): void {
+        if (!id) {
+            this.messageService.add('No id provided.');
+            this.url = '';
+            return;
+        }
         console.log('Getting url by id: ' + id);
         this.urlService.getUrlFromHash(id).subscribe((url) => console.log(url));
     }

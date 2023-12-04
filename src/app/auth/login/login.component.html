@@ -1,0 +1,36 @@
+<div class="container flex items-center justify-center">
+  <div class="form-wrapper">
+
+      <tui-notification *ngIf="showLoginError$ | async" status="error" class="mt-4">
+          Ooops! The login details are incorrect.
+      </tui-notification>
+
+      <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && submit()" class="flex items-center gap-2 w-full fot-content max-w-[50rem]">
+
+          <div class="min-w-[20rem] w-full shortener-input tui-form__row">
+              <tui-input formControlName="username">Username <span class="tui-required"></span>
+              </tui-input>
+          </div>
+
+          <div class="min-w-[20rem] w-full shortener-input tui-form__row">
+              <tui-input-password
+                  formControlName="password">
+                  Password <span class="tui-required"></span>
+              </tui-input-password>
+          </div>
+          <div class="min-w-[20rem] w-full shortener-input tui-form__row">
+              <button
+                  tuiButton
+                  [showLoader]="(isLoading$ | async)!"
+                  class="tui-form__button"
+                  size="m"
+                  type="submit"
+              >
+                  Login
+              </button>
+          </div>
+      </form>
+  </div>
+</div>
+
+

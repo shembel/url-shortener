@@ -1,0 +1,20 @@
+.container {
+    width: 100%;
+    display: flex;
+    height: 100vh;
+}
+
+.form-wrapper {
+  width: 50%;
+
+  form {
+    box-shadow: 0 0.125rem 1rem rgb(0 0 0 / 8%);
+    margin-top: 1.5rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  @media not all and (min-width: 768px) {
+    width: 50%;
+  }
+}
