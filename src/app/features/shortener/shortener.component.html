@@ -1,0 +1,132 @@
+<tui-notification
+    *ngIf="isInvalidUrl$"
+    status="error"
+    (close)="onCloseNotification()"
+    class="w-full max-w-[30rem] fixed top-20 left-1/2 transform -translate-x-1/2"
+>
+    The provided URL is malformed. Please enter correct URL (e.g. https://example.com).
+</tui-notification>
+
+<div class="items-center flex flex-col gap-2">
+    <form class="flex items-center gap-2 w-full fot-content max-w-[50rem]" [formGroup]="urlShortenerForm" (ngSubmit)="urlShortenerForm.valid && submit()">
+            <div class="min-w-[20rem] w-full shortener-input tui-form__row">
+                <tui-input
+                    #inputField
+                    formControlName="url"
+                    [appInvalidUrlValidator]="url"
+                >
+                   {{ inputText[selected] }}: <span class="tui-required"></span>
+                </tui-input>
+            </div>
+        <div class="h-full w-full flex flex-col gap-2">
+            <tui-hosted-dropdown
+                tuiDropdownLimitWidth="fixed"
+                [content]="dropdown"
+                [(open)]="open"
+            >
+                <tui-loader
+                    [inheritColor]="true"
+                    [overlay]="true"
+                    [showLoader]="(isLoading | async) === true"
+                >
+                    <div
+                        class="group"
+                        tuiGroup>
+                            <button
+                                appDebounceClick
+                                [debounceTime]="500"
+                                (debounceClick)="onClickAction(selected, inputField.value)"
+                                size="l"
+                                tuiButton
+                                type="button"
+                                class="options-button tui-group__auto-width-item rounded-r-none pr-[2px]"
+
+                            >
+                                {{ selected }}
+                            </button>
+                        <button
+                            size="l"
+                            title="Menu"
+                            tuiHostedDropdownHost
+                            tuiIconButton
+                            type="button"
+                            class="tui-group__auto-width-item rounded-l-none"
+                            [iconRight]="icon"
+                        ></button>
+                        <ng-template #icon>
+                            <tui-svg
+                                src="tuiIconChevronDown"
+                                class="icon"
+                                [class.icon_rotated]="open"
+                            ></tui-svg>
+                        </ng-template>
+                    </div>
+                </tui-loader>
+            </tui-hosted-dropdown>
+            <ng-template
+                #dropdown
+            >
+                <tui-data-list>
+<!--                    <ng-template *ngFor="let option of options">-->
+                        <button
+                            *ngFor="let option of options"
+                            tuiOption
+                            (click)="onClickMenu(option)"
+                        >
+                            {{ option }}
+                            <tui-tooltip
+                                *ngIf="option === 'Get all' && (isLoggedIn$ | async) === false"
+                                direction="bottom"
+                                [content]="logintooltip"
+                            ></tui-tooltip>
+                        </button>
+                        <ng-template #logintooltip>Please log in to use this functionality.</ng-template>
+
+<!--                    </ng-template>-->
+<!--                    <button-->
+<!--                        *ngFor="let option of options"-->
+<!--                        tuiOption-->
+<!--                        [disabled]="!!(isLoggedIn$ | async)"-->
+<!--                        (click)="onClickMenu(option)"-->
+<!--                    >-->
+<!--                        {{ option }}-->
+<!--                    </button>-->
+
+                </tui-data-list>
+            </ng-template>
+        </div>
+    </form>
+</div>
+
+
+<!--            <button-->
+<!--                tuiButton-->
+<!--                icon="tuiIconTarget"-->
+<!--                class="tui-form__button"-->
+<!--                size="m"-->
+<!--                type="button"-->
+<!--                (click)="getUrlById(inputField.value)"-->
+<!--            >Get by UUID</button>-->
+
+<!--            <button-->
+<!--                tuiButton-->
+<!--                icon="tuiIconList"-->
+<!--                class="tui-form__button"-->
+<!--                size="m"-->
+<!--                type="button"-->
+<!--                (click)="getAllUrls()"-->
+<!--            >Get all urls</button>-->
+<!--            &lt;!&ndash;            [showLoader]="(isLoading$ | async)!"&ndash;&gt;-->
+<!--            <button-->
+<!--                tuiButton-->
+<!--                icon="tuiIconWindLarge"-->
+<!--                class="order-0 tui-form__button"-->
+<!--                size="m"-->
+<!--                type="submit"-->
+<!--            >Generate</button>-->
+<!--        </div>-->
+<!--        <div class="h-full flex items-center tui-form__buttons">-->
+<!--      -->
+<!--        </div>-->
+
+

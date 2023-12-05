@@ -17,3 +17,11 @@
         animation: rotating 1.5s linear infinite;
     }
 }
+
+.options-button {
+        min-width: 9.25rem;
+}
+
+.shortener-input input[disabled]{
+    cursor: not-allowed;
+}
