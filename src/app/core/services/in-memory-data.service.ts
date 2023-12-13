@@ -12,12 +12,12 @@ export class InMemoryDataService implements InMemoryDbService {
         const urls: Url[] = [
             {
                 id: 'bbea622a-5e83-4f85-8982-d27cf437fb1c',
-                shortUrl: 'http://localhost:3000/ZaEOZRVn',
+                shortUrl: 'https://shembel.com/ZaEOZRVn',
                 fullUrl: 'https://www.google.com',
             },
             {
                 id: uuidv4(),
-                shortUrl: 'http://localhost:3000/NcaHkbqnL',
+                shortUrl: 'https://shembel.com/NcaHkbqnL',
                 fullUrl: 'https://example.com',
             },
         ];

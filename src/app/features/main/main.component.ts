@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ShortenerComponent } from '../../shared/ui/shortener/shortener.component';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ShortenerComponent } from '../shortener/shortener.component';
 
 @Component({
     selector: 'app-main',
@@ -7,5 +7,6 @@ import { ShortenerComponent } from '../../shared/ui/shortener/shortener.componen
     imports: [ShortenerComponent],
     templateUrl: './main.component.html',
     styleUrl: './main.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent {}

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { DefaultService, Url, UrlItem } from '../modules/openapi';
 
-import { UrlHashB62 } from '../../shared/util/url-hash-b62';
+import { shortenUrlHashB62 } from '../../shared/util/url-hash-b62';
 import { v4 as uuidv4 } from 'uuid';
 
 import { MessageService } from './message.service';
 
 // ToDo: fix and use configuration parameter and not fix the base path in the default servics
-// import { CustomDefaultService } from '../providers/api.service.provider';
 
 @Injectable({
     providedIn: 'root',
@@ -16,13 +16,25 @@ import { MessageService } from './message.service';
 
 // ToDo: derive subclass and inject properly
 export class UrlService {
+    private destroy$ = new Subject<void>();
+
+    public isLoading = new BehaviorSubject<boolean>(false);
+    public isLoading$ = this.isLoading.asObservable();
+
+    public updateIsLoadingStatus(newStatus: boolean) {
+        this.isLoading.next(newStatus);
+    }
+
     constructor(
         public api: DefaultService,
         private messageService: MessageService
     ) {}
 
+    // ToDo: implement timeouts for long running / failing requests
     shortenUrl(url: string): Observable<UrlItem> {
-        const urlHash = UrlHashB62.shortenUrl(url);
+        this.updateIsLoadingStatus(true);
+
+        const urlHash = shortenUrlHashB62(url);
         const urlObject: UrlItem = {
             id: uuidv4(),
             shortUrl: urlHash,
@@ -31,35 +43,46 @@ export class UrlService {
 
         return this.api.postUrls(urlObject).pipe(
             tap((url: UrlItem) => {
-                return this.log(
-                    `Created new short url: \n
-                         # id=${url.id} \n
-                         # shortUrl=${url.shortUrl} \n
-                         # fullUrl=${url.fullUrl}`
+                this.updateIsLoadingStatus(false);
+                this.log(
+                    `Created new short url: \n # id=${url.id} \n # shortUrl=${url.shortUrl} \n # fullUrl=${url.fullUrl}`
                 );
             }),
-            catchError(this.handleError<UrlItem>('shortenUrl'))
+            catchError((error) => {
+                this.updateIsLoadingStatus(false);
+                return this.handleError<UrlItem>('shortenUrl')(error);
+            })
         );
     }
-
     getUrlFromHash(shortUrl: string): Observable<Url> {
+        this.updateIsLoadingStatus(true);
+
         return this.api.getUrlsByUuid(shortUrl).pipe(
             tap((url: Url) => {
-                return this.log(
-                    `Fetched url with id=${url.id} and shortUrl=${url.shortUrl}`
+                this.updateIsLoadingStatus(false);
+                this.log(
+                    `Fetched URL with id=${url.id} and shortUrl=${url.shortUrl}`
                 );
             }),
-            catchError(this.handleError<Url>('getUrlFromHash'))
+            catchError((error) => {
+                this.updateIsLoadingStatus(false);
+                return this.handleError<Url>('getUrlFromHash')(error);
+            })
         );
     }
 
     getAllUrls(): Observable<UrlItem[]> {
-        console.log('Fetching urls...');
+        this.updateIsLoadingStatus(true);
 
         return this.api.getUrls().pipe(
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            tap((urls) => this.log(`fetched urls: ${JSON.stringify(urls)}`)),
-            catchError(this.handleError<UrlItem[]>('getAllUrls', []))
+            tap((urls: UrlItem[]) => {
+                this.updateIsLoadingStatus(false);
+                this.log(`Fetched URLs: ${JSON.stringify(urls)}`);
+            }),
+            catchError((error) => {
+                this.updateIsLoadingStatus(false);
+                return this.handleError<UrlItem[]>('getAllUrls', [])(error);
+            })
         );
     }
 
@@ -85,20 +108,25 @@ export class UrlService {
      * @param result - optional value to return as the observable result
      */
     private handleError<T>(operation = 'operation', result?: T) {
+        this.updateIsLoadingStatus(false);
+
         return (error: Error): Observable<T> => {
             // TODO: maybe send the error to remote logging infrastructure
-            console.error(error);
+            // console.error(error);
 
             // TODO: improve wording for better UX
             this.log(`${operation} failed: ${error.message}`);
 
-            // Let the app keep running by returning an empty result.
             return of(result as T);
         };
     }
 
     private log(message: string) {
-        console.log(`Url service: ${message}`);
         this.messageService.add(`>_ ${message}`);
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

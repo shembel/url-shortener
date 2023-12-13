@@ -3,17 +3,7 @@ import { Observable } from 'rxjs';
 
 import { USERS } from './db.data';
 
-interface AuthRequest {
-    client_id?: string;
-    client_secret?: string;
-    grant_type?: string;
-    username?: string;
-    password?: string;
-    refresh_token?: string;
-}
-
 // ToDo: fix types (remove dangerous AS)
-
 export class MockAuth {
     constructor(private reqInfo: RequestInfo) {}
 

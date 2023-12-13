@@ -5,28 +5,33 @@ import { LocalStorageService } from './local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class TokenStorageService {
-    private accessTokenKey: string;
-    private refreshTokenKey: string;
+    private readonly accessTokenKey: string;
+    private readonly refreshTokenKey: string;
 
     constructor(
         private configService: ConfigService,
         private localStorageService: LocalStorageService
     ) {
-        const authSettings = this.configService.getAuthSettings();
-        this.accessTokenKey = authSettings.accessTokenKey || 'accessToken';
-        this.refreshTokenKey = authSettings.refreshTokenKey || 'refreshToken';
+        const authSettings = this.configService.getAuthSettings() || {
+            accessTokenKey: 'accessToken',
+            refreshTokenKey: 'refreshToken',
+        };
+        this.accessTokenKey = authSettings.accessTokenKey;
+        this.refreshTokenKey = authSettings.refreshTokenKey;
     }
 
-    getAccessToken(): string {
-        return this.localStorageService.getItem(this.accessTokenKey) as string;
+    getAccessToken(): string | null {
+        const item = this.localStorageService.getItem(this.accessTokenKey);
+        return item ? (item as string) : null;
+    }
+
+    getRefreshToken(): string | null {
+        const item = this.localStorageService.getItem(this.refreshTokenKey);
+        return item ? (item as string) : null;
     }
 
     saveAccessToken(token: string) {
         this.localStorageService.setItem(this.accessTokenKey, token);
-    }
-
-    getRefreshToken(): string {
-        return this.localStorageService.getItem(this.refreshTokenKey) as string;
     }
 
     saveRefreshToken(token: string) {

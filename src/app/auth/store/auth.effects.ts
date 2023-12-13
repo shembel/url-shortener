@@ -14,7 +14,6 @@ export class AuthEffects {
         return this.actions$.pipe(
             ofType(AuthActions.loginRequest),
             exhaustMap((credentials) => {
-                // debugger;
                 return this.authService
                     .login(credentials.username, credentials.password)
                     .pipe(

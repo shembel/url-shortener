@@ -1,10 +1,10 @@
 <header class="topbar">
-    <div>
+    <div class="mr-2">
         <a
             href="https://github.com/shembel/url-shortener"
             target="_blank"
             rel="noopener noreferrer"
-            class="ml-4 text-2xl"
+            class="ml-4 text-2x"
             [tuiHint]="'Source code'"
         >
             <img src="assets/logos/github-mark.png" alt="Github cat image">
@@ -33,37 +33,40 @@
     </div>
 
     <div>
-        <a
-            tuiButton
-            size="m"
-            routerLink="/"
-            [appearance]="'outline'"
-            icon="tuiIconHome"
-        >
-            Home
-        </a>
+        <tui-hosted-dropdown tuiDropdownAlign="left" [content]="userDropdown">
+            <!--           eslint-disable-next-line -->
+            <button class="header-btn menu-btn" tuiButton size="m" icon="tuiIconMenuLarge"></button>
+        </tui-hosted-dropdown>
+        <ng-template #userDropdown>
+            <tui-data-list role="menu">
+                <tui-opt-group>
+                    <button tuiOption routerLink="/">
+                        <span>
+                          <tui-svg class="mr-2" src="tuiIconHome"></tui-svg>
+                          Home
+                        </span>
+                    </button>
 
-        <a
-            tuiButton
-            size="m"
-            routerLink="/dashboard"
-            [appearance]="'outline'"
-            icon="tuiIconBarChart2"
-        >
-            Dashboard
-        </a>
+                    <button tuiOption routerLink="/dashboard">
+                        <span>
+                          <tui-svg class="mr-2" src="tuiIconBarChart2"></tui-svg>
+                          Dashboard
+                        </span>
+                    </button>
+                    <button tuiOption (click)="toggleMessages()">
+                        <span>
+                          <tui-svg class="mr-2" src="tuiIconAlertCircle"></tui-svg>
+                            Debug
+                        </span>
+                    </button>
+                </tui-opt-group>
+            </tui-data-list>
+        </ng-template>
     </div>
 
     <ng-template #login>
-        <a
-            tuiButton
-            size="m"
-            routerLink="/login"
-            [appearance]="'outline'"
-            icon="tuiIconUser"
-        >
+        <a class="header-btn order-100" tuiButton size="m" routerLink="/login" icon="tuiIconUser">
             Login
         </a>
     </ng-template>
-
 </header>

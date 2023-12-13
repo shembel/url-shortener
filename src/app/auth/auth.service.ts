@@ -65,7 +65,6 @@ export class AuthService {
      * @returns Observable<AccessData>
      */
     login(username: string, password: string): Observable<AccessData> {
-        // debugger;
         return this.http.post<AccessData>(`${this.hostUrl}/api/auth/login`, {
             client_id: this.clientId,
             client_secret: this.clientSecret,

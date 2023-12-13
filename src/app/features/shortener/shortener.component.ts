@@ -2,9 +2,10 @@ import {
     ChangeDetectionStrategy,
     Component,
     ViewChild,
-    OnDestroy,
-    OnInit,
+    Inject,
 } from '@angular/core';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+
 import {
     FormControl,
     FormGroup,
@@ -24,36 +25,38 @@ import {
     TuiTooltipModule,
     TuiHintModule,
     TuiLoaderModule,
+    TuiAlertService,
 } from '@taiga-ui/core';
 import {
+    TuiActionModule,
     TuiDataListWrapperModule,
     TuiInputModule,
     TuiInputPasswordModule,
+    TuiIslandModule,
+    TuiTilesModule,
 } from '@taiga-ui/kit';
 import { CommonModule } from '@angular/common';
 
-import { AuthFacade } from '../../../auth/store/auth.facade';
+import { AuthFacade } from '../../auth/store/auth.facade';
 
-import { InvalidUrlValidatorDirective } from '../../util/invalid-url-validator.directive';
-import { UrlService } from '../../../core/services';
-import { MessageService } from '../../../core/services/message.service';
-import { Observable, Subscription } from 'rxjs';
+import { UrlService } from '../../core/services';
+import { MessageService, WindowService } from '../../core/services';
 
-import { DebounceClickDirective } from '../../util/debounce-click.directive';
+import { DebounceClickDirective } from '../../shared/util/debounce-click.directive';
+import { urlValidator, urlIsString } from '../../shared/util/url-validator';
+import { UrlItem } from '../../core/modules/openapi';
+import { Subject, takeUntil } from 'rxjs';
 
-function urlIsString(url: string | null | undefined): url is string {
-    return typeof url === 'string';
-}
 @Component({
     standalone: true,
     selector: 'app-shortener-input',
     templateUrl: './shortener.component.html',
     styleUrls: ['./shortener.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         FormsModule,
         CommonModule,
         ReactiveFormsModule,
+        ClipboardModule,
 
         TuiInputModule,
         TuiSvgModule,
@@ -63,15 +66,18 @@ function urlIsString(url: string | null | undefined): url is string {
         TuiInputPasswordModule,
         TuiNotificationModule,
         TuiHostedDropdownModule,
-        InvalidUrlValidatorDirective,
         TuiDataListWrapperModule,
         TuiDataListModule,
         TuiTooltipModule,
         TuiHintModule,
         TuiLoaderModule,
+        TuiIslandModule,
+        TuiActionModule,
+        TuiTilesModule,
 
         DebounceClickDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 // ToDo: unsubscribe on onDestroy
@@ -79,76 +85,65 @@ export class ShortenerComponent {
     @ViewChild(TuiHostedDropdownComponent)
     component?: TuiHostedDropdownComponent;
 
-    private subscriptions = {
-        shortenUrl: Subscription,
-        getAllUrls: Subscription,
-        getUrlFromHash: Subscription,
-    };
+    // private > public for testing purposes
+    public destroy$ = new Subject<void>();
 
-    // isLoading$ = this.urlService.isLoading$;
-    // isLoading$ = this.urlService.isLoading;
+    public shortURL: UrlItem['shortUrl'] = '';
 
-    isLoading = this.urlService.isLoading;
+    isInvalidUrl$ = false;
+    isInvalidUUID$ = false;
 
-    isLoggedIn$ = this.authFacade.isLoggedIn$;
+    isLoading!: boolean;
+    isLoading$ = this.urlService.isLoading$;
+
+    public isLoggedIn$ = this.authFacade.isLoggedIn$;
 
     url: string = '';
-    readonly options = ['Generate', 'Get by id', 'Get all'];
+    readonly actions = ['Generate', 'Get by id', 'Get all'];
     readonly inputText: { [key: string]: string } = {
         Generate: 'Enter URL to shorten',
         'Get by id': 'Enter id to get URL',
         'Get all': 'Get all URLs',
     };
 
-    shortenedUrl: string = '';
-    longUrlFromHash: string = '';
-
     open = false;
-    selected = this.options[0];
+    selected = this.actions[0];
 
     constructor(
         private urlService: UrlService,
         private messageService: MessageService,
-        private authFacade: AuthFacade
+        private authFacade: AuthFacade,
+        @Inject(TuiAlertService)
+        public readonly alerts: TuiAlertService,
+        public windowService: WindowService
     ) {}
 
-    onClickMenu(option: string) {
+    onClickMenu(action: string) {
         this.open = !this.open;
-        this.selected = option;
+        this.selected = action;
         console.log(this.selected);
         console.log(this.isLoggedIn$);
     }
 
-    onClickAction(option: string, data?: string) {
-        switch (option) {
-            case 'Generate':
-                this.submit();
-                break;
-            case 'Get by id':
-                this.getUrlById(data as string);
-                break;
-            case 'Get all':
-                this.getAllUrls();
-                break;
-        }
+    onClickAction(action: string, event: Event, data?: string) {
+        this.submit(action, data);
+        event.preventDefault();
+    }
+
+    onClickCopy(shortURL: string) {
+        this.shortURL = '';
+        this.alerts.open(shortURL).subscribe();
     }
 
     readonly urlShortenerForm = new FormGroup({
-        url: new FormControl('', { validators: [Validators.required] }),
+        url: new FormControl('', {
+            validators: [Validators.required, urlValidator],
+        }),
     });
-
-    // isLoading$ =
-    isInvalidUrl$ = false;
-
-    customDisable() {
-        if (this.selected === 'Get all' && !this.isLoggedIn$) {
-            return true;
-        }
-        return false;
-    }
 
     onCloseNotification() {
         this.isInvalidUrl$ = false;
+        this.isInvalidUUID$ = false;
     }
 
     getAllUrls(): void {
@@ -161,26 +156,64 @@ export class ShortenerComponent {
             this.url = '';
             return;
         }
+
         console.log('Getting url by id: ' + id);
-        this.urlService.getUrlFromHash(id).subscribe((url) => console.log(url));
+        this.urlService.getUrlFromHash(id).subscribe((urlItem) => {
+            this.isInvalidUUID$ = urlItem === undefined;
+            this.shortURL = urlItem?.shortUrl ?? '';
+        });
     }
 
-    submit() {
+    openUrl(shortUrl: string): void {
+        if (!shortUrl) {
+            this.messageService.add('No url provided.');
+            return;
+        }
+        this.windowService.openUrl(shortUrl);
+    }
+
+    shortenUrl(): void {
         const { url } = this.urlShortenerForm.value;
 
         if (this.urlShortenerForm.invalid) {
-            this.isInvalidUrl$ = this.urlShortenerForm.invalid;
+            this.isInvalidUrl$ = true;
             return;
         }
 
         this.isInvalidUrl$ = false;
 
-        // type guard
         if (urlIsString(url)) {
-            console.log('Generating short URL...');
-            this.urlService.shortenUrl(url).subscribe(() => {
+            this.urlService.shortenUrl(url).subscribe((urlItem) => {
+                this.shortURL = urlItem.shortUrl;
                 this.urlShortenerForm.setValue({ url: '' });
             });
         }
+    }
+
+    submit(action: string, data?: string) {
+        switch (action) {
+            case 'Generate':
+                this.shortenUrl();
+                break;
+            case 'Get by id':
+                this.getUrlById(data as string);
+                break;
+            case 'Get all':
+                this.getAllUrls();
+                break;
+        }
+    }
+
+    ngOnInit(): void {
+        this.urlService.isLoading$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((isLoading) => {
+                this.isLoading = isLoading;
+            });
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

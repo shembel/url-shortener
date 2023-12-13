@@ -6,7 +6,7 @@ import { UrlService } from './url.service';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { DefaultService, UrlItem } from '../modules/openapi';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { UrlHashB62 } from '../../shared/util/url-hash-b62';
+import { shortenUrlHashB62 } from '../../shared/util/url-hash-b62';
 
 describe('UrlService', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

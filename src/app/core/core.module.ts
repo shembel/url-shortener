@@ -26,6 +26,7 @@ import { MockAuthApiService } from './mock-data';
     providers: [...authInterceptorProviders],
 })
 export class CoreModule {
+    // singleton guard
     constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
         if (parentModule) {
             throw new Error('CoreModule can be loaded only once.');

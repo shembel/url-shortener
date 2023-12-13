@@ -1,5 +1,4 @@
-<div class="messages-container" *ngIf="messageService.messages.length">
-
+<div class="messages-container" *ngIf="(showMessages$ | async) === true">
     <h3>Messages (scroll container)</h3>
     <button
         tuiButton
@@ -7,20 +6,11 @@
         class="tui-form__button"
         size="m"
         type="submit"
-        class="bg-transparent"
+        class="bg-transparent w-fit"
     >
         Clear messages
     </button>
     <div class="messages-list">
         <div *ngFor='let message of messageService.messages'> {{message}} </div>
     </div>
-
-<!--      <button-->
-<!--        type="button"-->
-<!--        class="clear"-->
-<!--        (click)="messageService.clear()"-->
-<!--      >-->
-<!--        Clear messages-->
-<!--      </button>-->
-
 </div>

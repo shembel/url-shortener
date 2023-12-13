@@ -14,7 +14,24 @@
     padding: 0.5rem;
   }
 
-  @media not all and (min-width: 768px) {
-    width: 50%;
-  }
 }
+
+@media (max-width: 768px) {
+    .form-wrapper {
+        width: 100%;
+        form {
+            display: flex;
+            flex-direction: column !important;
+
+            .shortener-input {
+                min-width: 100% !important;
+            }
+
+            .login-btn-container {
+                display: flex;
+                justify-content: center;
+            }
+        }
+    }
+}
+

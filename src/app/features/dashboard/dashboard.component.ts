@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthFacade } from '../../auth/store/auth.facade';
 import { USERS } from '../../core/mock-data';
 import { TuiBadgeModule } from '@taiga-ui/kit';
@@ -17,6 +17,7 @@ import { LetDirective } from '@ngrx/component';
     ],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
     user$ = this.authFacade.user$;

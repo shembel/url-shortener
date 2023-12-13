@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';
 import { AuthGuardService, NoAuthGuardService } from './auth/guards';
+import { MainComponent } from './features/main/main.component';
 export const routes: Routes = [
     {
         path: '',
@@ -9,27 +9,30 @@ export const routes: Routes = [
     },
     {
         path: 'main',
-        loadChildren: () =>
-            import('./features/main/main.module').then((m) => m.MainModule),
-    },
-    {
-        path: 'dashboard',
-        loadChildren: () =>
-            import('./features/dashboard/dashboard.module').then(
-                (m) => m.DashboardModule
-            ),
+        component: MainComponent,
     },
     {
         path: 'login',
-        component: LoginComponent,
-        canActivate: [() => NoAuthGuardService()],
+        canActivate: [NoAuthGuardService()],
+        loadComponent: () =>
+            import('./auth/login/login.component').then(
+                (m) => m.LoginComponent
+            ),
     },
     {
         path: 'dashboard',
-        canActivate: [AuthGuardService],
-        loadChildren: () =>
-            import('./features/dashboard/dashboard.module').then(
-                (m) => m.DashboardModule
+        canActivate: [AuthGuardService()],
+        loadComponent: () =>
+            import('./features/dashboard/dashboard.component').then(
+                (m) => m.DashboardComponent
             ),
+    },
+    {
+        path: '404',
+        component: MainComponent,
+    },
+    {
+        path: '**',
+        redirectTo: '/404',
     },
 ];

@@ -17,13 +17,4 @@ export const USERS = [
         accessToken: 'valid-jwt-access-token-2',
         refreshToken: 'valid-jwt-refresh-token-2',
     },
-    {
-        id: 3,
-        firstName: 'Santa',
-        lastName: 'Claus',
-        username: 'Ivan',
-        password: '31/12/1950',
-        accessToken: 'valid-jwt-access-token-3',
-        refreshToken: 'valid-jwt-refresh-token-3',
-    },
 ];

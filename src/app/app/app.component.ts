@@ -1,14 +1,12 @@
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+
 import {
     TuiRootModule,
-    TuiDialogModule,
-    TuiAlertModule,
     TuiNightThemeService,
     TuiThemeNightModule,
-    TuiModeModule,
 } from '@taiga-ui/core';
-import { Component, Inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { TUI_PARENT_ANIMATION } from '@taiga-ui/cdk';
 
@@ -21,28 +19,23 @@ import { Url } from '../core/modules/openapi';
     standalone: true,
     imports: [
         CommonModule,
+
         RouterOutlet,
+
         TuiRootModule,
-        TuiDialogModule,
-        TuiAlertModule,
-        RouterModule,
-        HeaderComponent,
         TuiThemeNightModule,
-        TuiModeModule,
+
+        HeaderComponent,
         MessagesComponent,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     animations: [TUI_PARENT_ANIMATION],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
     title = 'url-shortener';
     urls: Url[] = [];
-
-    ngOnInit(): void {
-        return;
-        // this.getUrls();
-    }
 
     constructor(
         @Inject(TuiNightThemeService) readonly night: TuiNightThemeService

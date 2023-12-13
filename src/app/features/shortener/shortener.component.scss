@@ -25,3 +25,71 @@
 .shortener-input input[disabled]{
     cursor: not-allowed;
 }
+
+.copy-link-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    background: #f9f9f980;
+    padding: 0.72rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    color: #222222;
+    visibility: hidden;
+    max-width: 532px;
+
+    .url-text {
+        overflow-y: auto;
+    }
+
+    p {
+        background-color: #333333;
+        padding: 1rem;
+        color: white;
+        font-size: large;
+        border-radius: 0.5rem;
+        overflow-x: scroll;
+        max-width: 330px;
+    }
+
+    h3 {
+        margin: 0;
+        font-size: large;
+    }
+
+    button {
+        margin-left: 0.5rem;
+
+        div {
+            padding: 1rem 1.5rem;
+        }
+    }
+}
+
+.link-actions {
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width: 768px) {
+    .copy-link-container {
+        //max-width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .options-button {
+        align-items: center;
+    }
+
+    .url-form {
+        flex-direction: column;
+    }
+
+    .action-btns {
+        display: flex;
+        justify-content: center;
+    }
+}

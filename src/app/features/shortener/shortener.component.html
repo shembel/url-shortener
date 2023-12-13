@@ -6,14 +6,27 @@
 >
     The provided URL is malformed. Please enter correct URL (e.g. https://example.com).
 </tui-notification>
+<tui-notification
+    *ngIf="isInvalidUUID$"
+    status="error"
+    (close)="onCloseNotification()"
+    class="w-full max-w-[30rem] fixed top-20 left-1/2 transform -translate-x-1/2"
+>
+    The provided UUID didn't match any records in the database.
+</tui-notification>
+
 
 <div class="items-center flex flex-col gap-2">
-    <form class="flex items-center gap-2 w-full fot-content max-w-[50rem]" [formGroup]="urlShortenerForm" (ngSubmit)="urlShortenerForm.valid && submit()">
+    <form
+        class="url-form flex items-center gap-2 w-full fot-content max-w-[50rem]"
+        [formGroup]="urlShortenerForm"
+        (ngSubmit)="urlShortenerForm.valid && submit(selected)"
+    >
             <div class="min-w-[20rem] w-full shortener-input tui-form__row">
                 <tui-input
                     #inputField
                     formControlName="url"
-                    [appInvalidUrlValidator]="url"
+                    (keyup.enter)="onClickAction(selected, $event, inputField.value)"
                 >
                    {{ inputText[selected] }}: <span class="tui-required"></span>
                 </tui-input>
@@ -27,15 +40,15 @@
                 <tui-loader
                     [inheritColor]="true"
                     [overlay]="true"
-                    [showLoader]="(isLoading | async) === true"
+                    [showLoader]="(isLoading$ | async) === true"
                 >
                     <div
-                        class="group"
+                        class="group action-btns"
                         tuiGroup>
                             <button
                                 appDebounceClick
                                 [debounceTime]="500"
-                                (debounceClick)="onClickAction(selected, inputField.value)"
+                                (debounceClick)="onClickAction(selected, $event, inputField.value)"
                                 size="l"
                                 tuiButton
                                 type="button"
@@ -67,66 +80,53 @@
                 #dropdown
             >
                 <tui-data-list>
-<!--                    <ng-template *ngFor="let option of options">-->
                         <button
-                            *ngFor="let option of options"
+                            *ngFor="let action of actions"
                             tuiOption
-                            (click)="onClickMenu(option)"
+                            (click)="onClickMenu(action)"
                         >
-                            {{ option }}
+                            {{ action }}
                             <tui-tooltip
-                                *ngIf="option === 'Get all' && (isLoggedIn$ | async) === false"
+                                *ngIf="action === 'Get all' && (isLoggedIn$ | async) === false"
                                 direction="bottom"
                                 [content]="logintooltip"
                             ></tui-tooltip>
                         </button>
-                        <ng-template #logintooltip>Please log in to use this functionality.</ng-template>
-
-<!--                    </ng-template>-->
-<!--                    <button-->
-<!--                        *ngFor="let option of options"-->
-<!--                        tuiOption-->
-<!--                        [disabled]="!!(isLoggedIn$ | async)"-->
-<!--                        (click)="onClickMenu(option)"-->
-<!--                    >-->
-<!--                        {{ option }}-->
-<!--                    </button>-->
-
+<!--                    ToDo: render all urls -->
+                        <ng-template #logintooltip>Please log in to use this functionality. *also click on Debug in the menu to get view collected urls.</ng-template>
                 </tui-data-list>
             </ng-template>
         </div>
     </form>
+    <div
+        [ngStyle]="{ 'visibility': shortURL ? 'visible' : 'hidden' }"
+        class="font-large copy-link-container justify-around">
+        <div class="url-text flex items-start gap-2">
+            <p class="tui-island__paragraph">
+                {{ shortURL }}
+            </p>
+        </div>
+        <div class="link-actions">
+            <button
+                size="l"
+                tuiButton
+                type="button"
+                [cdkCopyToClipboard]="shortURL || ''"
+                class="copy-button tui-group__auto-width-item"
+                (click)="onClickCopy('Link copied!')"
+            >
+                Copy
+            </button>
+            <button
+                size="l"
+                tuiButton
+                type="button"
+                class="copy-button tui-group__auto-width-item"
+                (click)="openUrl(shortURL || '')"
+            >
+                Go
+            </button>
+        </div>
+    </div>
 </div>
-
-
-<!--            <button-->
-<!--                tuiButton-->
-<!--                icon="tuiIconTarget"-->
-<!--                class="tui-form__button"-->
-<!--                size="m"-->
-<!--                type="button"-->
-<!--                (click)="getUrlById(inputField.value)"-->
-<!--            >Get by UUID</button>-->
-
-<!--            <button-->
-<!--                tuiButton-->
-<!--                icon="tuiIconList"-->
-<!--                class="tui-form__button"-->
-<!--                size="m"-->
-<!--                type="button"-->
-<!--                (click)="getAllUrls()"-->
-<!--            >Get all urls</button>-->
-<!--            &lt;!&ndash;            [showLoader]="(isLoading$ | async)!"&ndash;&gt;-->
-<!--            <button-->
-<!--                tuiButton-->
-<!--                icon="tuiIconWindLarge"-->
-<!--                class="order-0 tui-form__button"-->
-<!--                size="m"-->
-<!--                type="submit"-->
-<!--            >Generate</button>-->
-<!--        </div>-->
-<!--        <div class="h-full flex items-center tui-form__buttons">-->
-<!--      -->
-<!--        </div>-->
-
 

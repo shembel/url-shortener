@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
     FormGroup,
     Validators,
@@ -48,7 +48,7 @@ import { of } from 'rxjs';
             useValue: of(['']),
         },
     ],
-    // changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
     readonly loginForm = new FormGroup({
@@ -67,6 +67,7 @@ export class LoginComponent {
 
     submit() {
         const { username, password } = this.loginForm.value;
+        console.log('submit', username, password);
         this.authFacade.login(username as string, password as string);
     }
 }

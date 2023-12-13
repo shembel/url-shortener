@@ -7,9 +7,12 @@
     //accent: '#3D164E',
 
     //[tuiTheme='night'] {
-        --tui-primary: #609dee;
-        --tui-primary-hover: #90aed6;
-        --tui-primary-active: #447cff;
+    //    --tui-primary: #609dee;
+        --tui-primary: #444444;
+        //--tui-primary-hover: #EC6821;
+        --tui-primary-hover: #EC7A3C;
+        //--tui-primary-active: #447cff;
+        --tui-primary-active: #EC6821;
 
         --tui-secondary: #E72B37;
         --tui-secondary-hover: #FF3D4E;
@@ -21,6 +24,9 @@
 
         --tui-link: #2760c4;
         --tui-link-hover: #4e81ec;
+        --tui-base-01: #333333 !important;
+        --tui-action-background: #333333 !important;
+        --tui-action-color: #ffffff !important;
     //}
 
     //--tui-primary: #5b0fff;
