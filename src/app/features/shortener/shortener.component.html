@@ -3,6 +3,7 @@
     status="error"
     (close)="onCloseNotification()"
     class="w-full max-w-[30rem] fixed top-20 left-1/2 transform -translate-x-1/2"
+    data-testid="invalid-url"
 >
     The provided URL is malformed. Please enter correct URL (e.g. https://example.com).
 </tui-notification>
@@ -11,6 +12,7 @@
     status="error"
     (close)="onCloseNotification()"
     class="w-full max-w-[30rem] fixed top-20 left-1/2 transform -translate-x-1/2"
+    data-testid="invalid-uuid"
 >
     The provided UUID didn't match any records in the database.
 </tui-notification>
@@ -21,12 +23,14 @@
         class="url-form flex items-center gap-2 w-full fot-content max-w-[50rem]"
         [formGroup]="urlShortenerForm"
         (ngSubmit)="urlShortenerForm.valid && submit(selected)"
+        data-testid="url-form"
     >
             <div class="min-w-[20rem] w-full shortener-input tui-form__row">
                 <tui-input
                     #inputField
                     formControlName="url"
                     (keyup.enter)="onClickAction(selected, $event, inputField.value)"
+                    data-testid="url-input"
                 >
                    {{ inputText[selected] }}: <span class="tui-required"></span>
                 </tui-input>
@@ -53,6 +57,7 @@
                                 tuiButton
                                 type="button"
                                 class="options-button tui-group__auto-width-item rounded-r-none pr-[2px]"
+                                data-testid="options-button"
 
                             >
                                 {{ selected }}
@@ -102,7 +107,10 @@
         [ngStyle]="{ 'visibility': shortURL ? 'visible' : 'hidden' }"
         class="font-large copy-link-container justify-around">
         <div class="url-text flex items-start gap-2">
-            <p class="tui-island__paragraph">
+            <p
+                class="tui-island__paragraph"
+                data-testid="short-url"
+            >
                 {{ shortURL }}
             </p>
         </div>
@@ -114,6 +122,7 @@
                 [cdkCopyToClipboard]="shortURL || ''"
                 class="copy-button tui-group__auto-width-item"
                 (click)="onClickCopy('Link copied!')"
+                data-testid="copy-button"
             >
                 Copy
             </button>
@@ -123,6 +132,7 @@
                 type="button"
                 class="copy-button tui-group__auto-width-item"
                 (click)="openUrl(shortURL || '')"
+                data-testid="go-button"
             >
                 Go
             </button>
